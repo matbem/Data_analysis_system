@@ -1,0 +1,22 @@
+.Main_text{
+    color: darkcyan;
+}
+body {
+    background-color: black;
+    color: white;
+}
+.label_select{
+    color: white;
+    font-weight: bolder;
+}
+.container{
+    width: 100%;
+}
+.form-check_all{
+    margin-top: 20px;
+}
+.form_check_inpt_only{
+    margin-top: 20px;
+}
+
+
