@@ -22,10 +22,10 @@
             <label class="label_check">Select options</label>
                 {% for function in functions %}
             <div class="form_check_inpt_only"></div>
-            <input class="form_check-input", type="checkbox" , id="{{function}}" value="{{function}}">
-            <label class="form_check-label" for="{{function}}">{{function}}</label>
+                <input class="form_check-input", type="checkbox" , id="{{function}}" value="{{function}}">
+                <label class="form_check-label" for="{{function}}">{{function}}</label>
             </div>
-                (% endfor %}
+                {% endfor %}
         </div>
         <button type="button" class=" button btn btn-outline-primary">Primary</button>
 
