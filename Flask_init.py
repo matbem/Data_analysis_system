@@ -40,6 +40,33 @@ def execute():
     function_file = data.get("function_file")
     filepath = os.path.join(FILES_FOLDER, filename)
 
+    if not os.path.isfile(filepath):
+        raise FileNotFoundError(f"File {filename} not found")
+
+    try:
+        with open(filepath) as csvfile:
+            reader = csv.reader(csvfile)
+            rows = list(reader)
+    except Exception as e:
+        print(e)
+        return jsonify({"Błąd odczytania pliku": str(e)})
+
+    functions_in_file = load_functions(function_file)
+    if not functions_in_file:
+        return jsonify({"error": f"Function {function_file} not found"})
+
+    results = {}
+    for i in selected_function:
+        function = functions_in_file.get(i)
+        if function:
+            try:
+                results[i] = function(rows)
+            except Exception as e:
+                results[i] = {"error": str(e)}
+        else:
+            results[i] = {"error": f"Function {function_file} not found"}
+
+
 
 
 if __name__ == '__main__':
