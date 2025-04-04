@@ -1,16 +1,16 @@
+import math
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from functools import reduce
 import scipy.stats as stats
-from data_loader import load_csv_file
 
 def compute_mean(df, column_name):
     return sum(df[column_name])/len(df[column_name])
 
-def compute_variance(df, column_name):
-    return sum(map(lambda x: (x - compute_mean(df, column_name))**2, df[column_name]))/len(df[column_name])
+
 
 def compute_std(df, column_name):
     return compute_variance(df, column_name)**0.5
@@ -22,10 +22,11 @@ def compute_median(df, column_name):
                 else (sorted_col[len(sorted_col)//2] + sorted_col[len(sorted_col)//2 - 1]) / 2)
             (sorted(df[column_name])))
 
-def compute_percentiles(df,column_name,percentile):
-    return (lambda sorted_col , p:
-            sorted_col[int(p * len(sorted_col) -1)/100]
-            )(sorted(df[column_name]), percentile)
+def compute_percentiles(df, column_name, percentile):
+    sorted_col = sorted(df[column_name])
+    index = int(percentile / 100 * (len(sorted_col) - 1))
+    return sorted_col[index]  # ta funkcje troche zmienilem bo mi wywalalo blad przez nia
+
 
 def compute_squared_difference(df,column_name):
     return list(map(lambda x: (x - compute_mean(df[column_name]))**2, df[column_name]))
@@ -45,7 +46,7 @@ def compute_covariance(df, column_name1, column_name2):
 def factorial_column(df, column_name):
     if df[column_name].empty:
         return df[column_name]
-    return df[column_name].apply
+    return df[column_name].apply(lambda x: math.factorial(int(x)) if x >= 0 else None) # i tutaj zmienilem ta koncowke po .apply
 
 def recursive_sum(df, column_name):
     return lambda: 0 if df.empty else df[column_name].iloc[0] + recursive_sum(df.iloc[1:], column_name)()
