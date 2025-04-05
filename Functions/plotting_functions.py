@@ -17,12 +17,6 @@ def plot_central_tendency(df, column_name):
     ax.legend()
     return fig
 
-def plot_spread(df, column_name):
-    fig, ax = plt.subplots()
-    sns.boxplot(x=df[column_name], ax=ax)
-    ax.set_title(f"Rozkład kolumny {column_name}")
-    return fig
-
 def plot_outliers(df, column_name):
     fig, ax = plt.subplots()
     sns.boxplot(x=df[column_name], ax=ax)
@@ -40,3 +34,16 @@ def plot_trend_over_index(df, column_name):
     sns.lineplot(x=range(len(df[column_name])), y=df[column_name], ax=ax)
     ax.set_title(f"Trend kolumny {column_name}")
     return fig
+
+def plot_scatter(df, column_name1, column_name2):
+    fig, ax = plt.subplots()
+    sns.scatterplot(x=df[column_name1], y=df[column_name2], ax=ax)
+    ax.set_title(f"Wykres rozrzutu kolumn {column_name1} i {column_name2}")
+    return fig
+
+def plot_violin(df, column_name):
+    fig, ax = plt.subplots()
+    sns.violinplot(x=df[column_name], ax=ax)
+    ax.set_title(f"Wykres skrzypcowy kolumny {column_name}")
+    return fig
+
