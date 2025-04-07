@@ -12,14 +12,10 @@
 <body>
     <div class="container mt-5">
         <h2 class="Main_text">Select a file from the list and choose functions</h2>
-        <form  class = "form" id="fileForm">
+        <form class="form" id="fileForm" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="label_select">Select File:</label>
-                <select id="fileSelect" class="form-select form-select-sm">
-                    {% for file in files %}
-                        <option value="{{ file }}">{{ file }}</option>
-                    {% endfor %}
-                </select>
+                <input type="file" id="fileInput" name="file" class="form-control">
                 <div class="form-check_all">
                     <label class="label_check">Select Functions:</label>
                     {% for function_file, function_list in functions.items() %}
@@ -31,18 +27,57 @@
                         {% endfor %}
                     {% endfor %}
                 </div>
-
-
                 <button id="confirm-button" type="button" class="btn btn-outline-primary">Confirm</button>
             </div>
         </form>
-
         <div class="mt-4">
             <h3>Result:</h3>
         </div>
     </div>
-<script src="{{ url_for('static', filename='JS_for_index.js') }}"></script>
+<script>
+document.getElementById('confirm-button').addEventListener('click', function() {
+    var fileInput = document.getElementById('fileInput');
+    var file = fileInput.files[0];
+    var formData = new FormData();
+    formData.append('file', file);
 
+    fetch('/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            var filename = data.filename;
+            var selectedFunctions = [];
+            document.querySelectorAll('input[type=checkbox]:checked').forEach(function(checkbox) {
+                selectedFunctions.push(checkbox.value);
+            });
 
+            fetch('/execute', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    filename: filename,
+                    functions: selectedFunctions,
+                    function_file: 'analysys_functions.py'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    alert('PDF generated and opened');
+                }
+            });
+        }
+    });
+});
+</script>
 </body>
 </html>
