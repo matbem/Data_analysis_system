@@ -26,49 +26,58 @@ def load_functions(filename):
         return {name: func for name, func in module.__dict__.items() if callable(func)}
     except Exception as e:
         print(e)
-        return jsonify({"error": str(e)})
 
-@app.route("/")
+
+@app.route("/", methods=["GET", "POST"])
 def index():
     files = [f for f in os.listdir(FILES_FOLDER) if f.endswith(".csv")]
     function_files = [f for f in os.listdir(FUNCTIONS_FOLDER) if f.endswith(".py")]
     functions = {file: list(load_functions(file).keys()) for file in function_files}
-    return render_template('index.html', files=files, functions=functions)
+
+    selected_file = request.form.get("selected_file")
+    columns = []
+
+    if selected_file:
+        file_path = os.path.join(FILES_FOLDER, selected_file)
+        df = load_csv_file(file_path)
+        if not df.empty:
+            columns = df.columns.tolist()
+
+
+
+    return render_template('index.html', files=files, functions=functions , columns=columns)
 
 @app.route("/execute", methods=["POST"])
 def execute():
-    data = request.json
-    filename = data.get("filename")
-    selected_function = data.get("functions", [])
-    function_file = data.get("function_file")
-    args_map = data.get("args", {})
+    filename = request.form.get("selected_file")
+    selected_function = request.form.get("functions")
+    args_map={}
 
-    filepath = os.path.join(FILES_FOLDER, filename)
+    for func in selected_function:
+        args = request.form.getlist(f"args[{func}][]")
+        args_map[func] = args
+    file_path = os.path.join(FILES_FOLDER, filename)
+    df = load_csv_file(file_path)
+    if df is None or df.empty:
+        return render_template("result.html",results={}, error="No data found")
 
-    if not os.path.isfile(filepath):
-        return jsonify({"error": f"File {filename} not found"})
-
-    df = load_csv_file(filepath)
-    if df is None:
-        return jsonify({"error": f"Plik '{filename}' nie został znaleziony."})
-
-    functions_in_file = load_functions(function_file)
-    if not functions_in_file:
-        return jsonify({"error": f"Function file {function_file} not found or failed to load."})
+    function_file = [f for f in os.listdir(FUNCTIONS_FOLDER) if f.endswith(".py")][0]
+    functions = load_functions(function_file)
 
     results = {}
-    for func_name in selected_function:
-        function = functions_in_file.get(func_name)
-        if function:
-            try:
-                args = args_map.get(func_name, [])
-                results[func_name] = function(df, *args)
-            except Exception as e:
-                results[func_name] = {"error": str(e)}
-        else:
-            results[func_name] = {"error": f"Function {func_name} not found in {function_file}"}
+    for func in selected_function:
+        try:
+            results[func] = functions[func](df, *args_map[func])
+        except Exception as e:
+            results[func] = str(e)
 
-    return jsonify(results)
+
+    return render_template("result.html", results=results)
+
+
+
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
