@@ -12,34 +12,41 @@
 <body>
     <div class="container mt-5">
         <h2 class="Main_text">Select a file from the list and choose functions</h2>
-        <form  class = "form" id="fileForm">
+        <form  method="POST">
             <div class="mb-3">
                 <label class="label_select">Select File:</label>
-                <select id="fileSelect" class="form-select form-select-sm">
-                    {% for file in files %}
-                        <option value="{{ file }}">{{ file }}</option>
-                    {% endfor %}
+                <select name="selected_file" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value=""> choose file </option>
+                {% for file in files %}
+                    <option value="{{ file }}" {% if file == selected_file %}selected{% endif %}>{{ file }}</option>
+                {% endfor %}
                 </select>
-                <div class="form-check_all">
-                    <label class="label_check">Select Functions:</label>
+            </div>
+            {% if columns %}
+                <div class="mb-3">
+                    <label class="label_check">Select Functions and Columns:</label>
                     {% for function_file, function_list in functions.items() %}
                         {% for function in function_list %}
+                    <div class="form-check mb-2">
                             <div class="form_check_inpt_only">
                                 <input class="form-check-input" type="checkbox" id="{{ function }}" value="{{ function }}">
                                 <label class="form-check-label" for="{{ function }}">{{ function }}</label>
                             </div>
-                        {% endfor %}
+                            <select name="args_{{function}}[]" multiple class = "form-select form-select-sm">
+                                {% for col in columns %}
+                                    <option value="{{col}}">{{col}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endfor %}
                     {% endfor %}
                 </div>
+            {% endif %}
 
 
-                <button id="confirm-button" type="button" class="btn btn-outline-primary">Confirm</button>
-            </div>
+                <button id="confirm-button"  formaction="/execute" class="btn btn-outline-primary">Confirm</button>
+
         </form>
-
-        <div class="mt-4">
-            <h3>Result:</h3>
-        </div>
     </div>
 <script src="{{ url_for('static', filename='JS_for_index.js') }}"></script>
 
