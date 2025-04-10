@@ -1,83 +1,74 @@
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import os
 import importlib.util
 import pandas as pd
 from Analysis.data_loader import load_csv_file
+import Functions.analysys_functions
+import Functions.plotting_functions
+import pandas as pd
+from fpdf import FPDF
 
 
 app = Flask(__name__)
 
-FILES_FOLDER = 'CSV_FILES'  # CSV FILES
-FUNCTIONS_FOLDER = 'Functions'  # FUNCTION FILES
-
-def load_functions(filename):
-    filepath = os.path.join(FUNCTIONS_FOLDER, filename)  # route to our function
-
-    if not os.path.isfile(filepath):
-        raise FileNotFoundError(f"File {filename} not found")
-
-    spec = importlib.util.spec_from_file_location("module", filepath)
-    module = importlib.util.module_from_spec(spec)
-
-    try:
-        spec.loader.exec_module(module)
-        print(f"Loaded functions: {module.__dict__.keys()}")  # print loaded functions
-        return {name: func for name, func in module.__dict__.items() if callable(func)}
-    except Exception as e:
-        print(e)
-
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    files = [f for f in os.listdir(FILES_FOLDER) if f.endswith(".csv")]
-    function_files = [f for f in os.listdir(FUNCTIONS_FOLDER) if f.endswith(".py")]
-    functions = {file: list(load_functions(file).keys()) for file in function_files}
-
-    selected_file = request.form.get("selected_file")
+    functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
+    uploaded_file = None
     columns = []
 
-    if selected_file:
-        file_path = os.path.join(FILES_FOLDER, selected_file)
-        df = load_csv_file(file_path)
-        if not df.empty:
+    if request.method == "POST":
+        file = request.files.get("selected_file")
+        if file:
+            filename = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(filename)
+            uploaded_file = filename
+            df = load_csv_file(uploaded_file)
             columns = df.columns.tolist()
 
-
-
-    return render_template('index.html', files=files, functions=functions , columns=columns)
+    return render_template('index.html', functions=functions , columns=columns, uploaded_file=uploaded_file)
 
 @app.route("/execute", methods=["POST"])
 def execute():
-    filename = request.form.get("selected_file")
-    selected_function = request.form.get("functions")
-    args_map={}
+    functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
+    filename = request.form.get("uploaded_file")
+    selected_function = request.form.getlist("functions")
+    print(selected_function)
+    args_map = {}
 
     for func in selected_function:
-        args = request.form.getlist(f"args[{func}][]")
+        args = request.form.getlist(f"args_{func}[]")
+        print(args)
         args_map[func] = args
-    file_path = os.path.join(FILES_FOLDER, filename)
-    df = load_csv_file(file_path)
-    if df is None or df.empty:
-        return render_template("result.html",results={}, error="No data found")
-
-    function_file = [f for f in os.listdir(FUNCTIONS_FOLDER) if f.endswith(".py")][0]
-    functions = load_functions(function_file)
+    print(args_map)
+    df = load_csv_file(filename)
+    if df.empty:
+        print("No data found")
 
     results = {}
-    for func in selected_function:
-        try:
-            results[func] = functions[func](df, *args_map[func])
-        except Exception as e:
-            results[func] = str(e)
+    for func_name, args in args_map.items():
+        if func_name in functions:
+            func = functions[func_name]
+            try:
+                results[func_name] = [func(df, *args_map[func_name]), *args_map[func_name]]
+            except Exception as e:
+                results[func_name] = f"Error executing {func_name}: {str(e)}"
 
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Results of data analysis", ln=True, align="C")
+    for func_name, result in results.items():
+        pdf.cell(200, 10, txt=f"{func_name} of column: {result[1]}: {result[0]}", ln=True, align="L")
 
-    return render_template("result.html", results=results)
+    pdf_path = os.path.join(UPLOAD_FOLDER, "results.pdf")
+    pdf.output(pdf_path)
 
-
-
-
-
+    return send_file(pdf_path, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True)

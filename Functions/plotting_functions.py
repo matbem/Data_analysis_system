@@ -47,3 +47,13 @@ def plot_violin(df, column_name):
     ax.set_title(f"Wykres skrzypcowy kolumny {column_name}")
     return fig
 
+def get_all_functions():
+    return {
+        "Plot distribution": plot_distribution,
+        "Plot central tendency": plot_central_tendency,
+        "Plot outliers": plot_outliers,
+        "Plot correlation_matrix": plot_correlation_matrix,
+        "Plot trend over index": plot_trend_over_index,
+        "Plot scatter": plot_scatter,
+        "Plot violin": plot_violin
+    }
