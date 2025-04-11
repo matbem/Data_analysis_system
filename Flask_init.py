@@ -1,74 +1,106 @@
-
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_file
 import os
 import importlib.util
 import pandas as pd
 from Analysis.data_loader import load_csv_file
-
+import Functions.analysys_functions
+import Functions.plotting_functions
+import pandas as pd
+from fpdf import FPDF
+import matplotlib.pyplot as plt
+from sympy.physics.units import coulomb
+import glob
 
 app = Flask(__name__)
 
-FILES_FOLDER = 'CSV_FILES'  # CSV FILES
-FUNCTIONS_FOLDER = 'Functions'  # FUNCTION FILES
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
 
-def load_functions(filename):
-    filepath = os.path.join(FUNCTIONS_FOLDER, filename)  # route to our function
 
-    if not os.path.isfile(filepath):
-        raise FileNotFoundError(f"File {filename} not found")
+def get_function_args_info():
+    args_info = {}
+    for func_name, func in functions.items():
+        if func.__code__.co_argcount > 2:
+            args_info[func_name] = func.__code__.co_argcount-1
+        else:
+            args_info[func_name] = 1
+    return args_info
 
-    spec = importlib.util.spec_from_file_location("module", filepath)
-    module = importlib.util.module_from_spec(spec)
+def cleaning_upload_folder():
+    files = glob.glob(os.path.join(UPLOAD_FOLDER, '*'))
+    for file in files:
+        try:
+            os.remove(file)
+        except Exception as e:
+            print(f"Error deleting file {file}: {e}")
 
-    try:
-        spec.loader.exec_module(module)
-        print(f"Loaded functions: {module.__dict__.keys()}")  # print loaded functions
-        return {name: func for name, func in module.__dict__.items() if callable(func)}
-    except Exception as e:
-        print(e)
-        return jsonify({"error": str(e)})
 
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def index():
-    files = [f for f in os.listdir(FILES_FOLDER) if f.endswith(".csv")]
-    function_files = [f for f in os.listdir(FUNCTIONS_FOLDER) if f.endswith(".py")]
-    functions = {file: list(load_functions(file).keys()) for file in function_files}
-    return render_template('index.html', files=files, functions=functions)
+    uploaded_file = None
+    columns = []
+    args_info = get_function_args_info()
+
+    if request.method == "POST":
+        file = request.files.get("selected_file")
+        if file:
+            filename = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(filename)
+            uploaded_file = filename
+            df = load_csv_file(uploaded_file)
+            columns = df.columns.tolist()
+
+    return render_template('index.html', functions=functions, columns=columns, uploaded_file=uploaded_file, args_info=args_info)
+
 
 @app.route("/execute", methods=["POST"])
 def execute():
-    data = request.json
-    filename = data.get("filename")
-    selected_function = data.get("functions", [])
-    function_file = data.get("function_file")
-    args_map = data.get("args", {})
+    filename = request.form.get("uploaded_file")
+    selected_function = request.form.getlist("functions")
+    print(selected_function)
+    args_map = {}
 
-    filepath = os.path.join(FILES_FOLDER, filename)
+    for func in selected_function:
+        args = request.form.getlist(f"args_{func}[]")
+        print(args)
+        args_map[func] = args
+    print(args_map)
+    df = load_csv_file(filename)
+    if df.empty:
+        print("No data found")
 
-    if not os.path.isfile(filepath):
-        return jsonify({"error": f"File {filename} not found"})
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.cell(200, 10, txt="Results of data analysis", ln=True, align="C")
 
-    df = load_csv_file(filepath)
-    if df is None:
-        return jsonify({"error": f"Plik '{filename}' nie został znaleziony."})
-
-    functions_in_file = load_functions(function_file)
-    if not functions_in_file:
-        return jsonify({"error": f"Function file {function_file} not found or failed to load."})
-
-    results = {}
-    for func_name in selected_function:
-        function = functions_in_file.get(func_name)
-        if function:
+    for func_name, args in args_map.items():
+        if func_name in functions:
+            func = functions[func_name]
             try:
-                args = args_map.get(func_name, [])
-                results[func_name] = function(df, *args)
+                columns = args_map[func_name]
+                result = func(df, *columns)
+                if isinstance(result, plt.Figure):
+                    fig_path = os.path.join(UPLOAD_FOLDER, f"{func_name}.png")
+                    result.savefig(fig_path)
+                    plt.close(result)
+                    pdf.cell(200, 10, txt=f"{func_name} of column: {', '.join(map(str, columns))}:", ln=True, align="L")
+                    pdf.image(fig_path, x=10, y=None, w=180)
+                else:
+                    pdf.cell(200, 10, txt=f"{func_name} of column: {', '.join(map(str, columns))}: {result}", ln=True, align="L")
             except Exception as e:
-                results[func_name] = {"error": str(e)}
-        else:
-            results[func_name] = {"error": f"Function {func_name} not found in {function_file}"}
+                pdf.cell(200, 10, txt=f"Error generating result for {func_name}: {str(e)}", ln=True, align="L")
 
-    return jsonify(results)
+
+    pdf_path = os.path.join(UPLOAD_FOLDER, "results.pdf")
+    pdf.output(pdf_path)
+
+    # Clean up the upload folder
+    #cleaning_upload_folder()
+
+    return send_file(pdf_path, as_attachment=True)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

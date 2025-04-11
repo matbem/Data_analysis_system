@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Results:</h2>
+    {% if results.error %}
+        <div class="alert alert-danger">{{ results.error }}</div>
+    {% else %}
+        <ul>
+            {% for func, result in results.items() %}
+                <li><strong>{{ func }}:</strong> {{ result }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <a href="/" class="btn btn-secondary mt-3">Back</a>
+</div>
+</body>
+</html>
