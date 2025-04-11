@@ -14,13 +14,24 @@ app = Flask(__name__)
 
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
+
+
+def get_function_args_info():
+    args_info = {}
+    for func_name, func in functions.items():
+        if func.__code__.co_argcount > 2:
+            args_info[func_name] = func.__code__.co_argcount-1
+        else:
+            args_info[func_name] = 1
+    return args_info
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
     uploaded_file = None
     columns = []
+    args_info = get_function_args_info()
 
     if request.method == "POST":
         file = request.files.get("selected_file")
@@ -31,12 +42,11 @@ def index():
             df = load_csv_file(uploaded_file)
             columns = df.columns.tolist()
 
-    return render_template('index.html', functions=functions, columns=columns, uploaded_file=uploaded_file)
+    return render_template('index.html', functions=functions, columns=columns, uploaded_file=uploaded_file, args_info=args_info)
 
 
 @app.route("/execute", methods=["POST"])
 def execute():
-    functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plotting_functions.get_all_functions()}
     filename = request.form.get("uploaded_file")
     selected_function = request.form.getlist("functions")
     print(selected_function)

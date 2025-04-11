@@ -10,35 +10,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <div class="container mt-5">
-        <h2 class="Main_text">Select a file from your computer</h2>
-        <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="label_select">Select File:</label>
-                <input type="file" name="selected_file" class="form-control" accept=".csv" onchange="this.form.submit()">
-            </div>
-        </form>
+<div class="container mt-5">
+    <h2 class="Main_text">Select a file from your computer</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label class="label_select">Select File:</label>
+            <input type="file" name="selected_file" class="form-control" accept=".csv" onchange="this.form.submit()">
+        </div>
+    </form>
 
-        {% if columns %}
-        <form method="POST" action="/execute">
-            <input type="hidden" name="uploaded_file" value="{{ uploaded_file }}">
-            <div class="mb-3">
-                <label class="label_check">Select Functions and Columns:</label>
-                {% for function, functions_obj in functions.items() %}
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" name="functions" id="{{ function }}" value="{{ function }}">
-                    <label class="form-check-label" for="{{ function }}">{{ function }}</label>
-                    <select name="args_{{ function }}[]" multiple class="form-select form-select-sm">
-                        {% for col in columns %}
-                        <option value="{{ col }}">{{ col }}</option>
-                        {% endfor %}
-                    </select>
+    {% if columns %}
+    <form method="POST" action="/execute">
+        <input type="hidden" name="uploaded_file" value="{{ uploaded_file }}">
+        <div class="mb-3">
+            <label class="label_check">Select Functions and Columns:</label>
+            {% for function, functions_obj in functions.items() %}
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" name="functions" id="{{ function }}"
+                       value="{{ function }}">
+                <label class="form-check-label" for="{{ function }}">{{ function }}
+                {% if args_info[function] ==2 %}
+                <span class="text-muted">(requires selection of two columns)</span>
+                {% endif %}
+                </label>
+                {% if args_info[function] == 1 %}
+                <select name="args_{{ function }}[]" class="form-select form-select-sm">
+                    {% for col in columns %}
+                    <option value="{{ col }}">{{ col }}</option>
+                    {% endfor %}
+                </select>
+                {% elif args_info[function] == 2 %}
+                <div>
+                    {% for col in columns %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="args_{{ function }}[]" value="{{ col }}"
+                               id="{{ function }}_{{ col }}">
+                        <label class="form-check-label" for="{{ function }}_{{ col }}">{{ col }}</label>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
+                {% endif %}
             </div>
-            <button type="submit" class="btn btn-outline-primary">Confirm</button>
-        </form>
-        {% endif %}
-    </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-outline-primary">Confirm</button>
+    </form>
+    {% endif %}
+</div>
 </body>
 </html>
