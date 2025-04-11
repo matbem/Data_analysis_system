@@ -1,1 +1,1 @@
-# Data_analysis_system
+# This Data Analysis System is base implementation of what is so called Data Science app. It reads files from desktop in .csv extension and then analysys them using foundational staticttical indicators and plots. Results are generated and downloaded as the PDF file.
