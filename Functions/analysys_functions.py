@@ -36,7 +36,7 @@ def compute_covariance(df, column_name1, column_name2):
     if len(df[column_name1]) != len(df[column_name2]) or len(df[column_name1]) < 2:
         return None
     return reduce(
-            lambda acc, xy: acc + (xy[0] - compute_mean(df[column_name1])) * (xy[1] - compute_mean(df[column_name2])),
+            lambda acc, xy: acc + (xy[0] - compute_mean(df,column_name1)) * (xy[1] - compute_mean(df,column_name2)),
             zip(df[column_name1], df[column_name2]),
             0
         ) / (len(df[column_name1]) - 1)

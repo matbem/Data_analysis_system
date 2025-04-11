@@ -9,6 +9,7 @@ import pandas as pd
 from fpdf import FPDF
 import matplotlib.pyplot as plt
 from sympy.physics.units import coulomb
+import glob
 
 app = Flask(__name__)
 
@@ -25,6 +26,14 @@ def get_function_args_info():
         else:
             args_info[func_name] = 1
     return args_info
+
+def cleaning_upload_folder():
+    files = glob.glob(os.path.join(UPLOAD_FOLDER, '*'))
+    for file in files:
+        try:
+            os.remove(file)
+        except Exception as e:
+            print(f"Error deleting file {file}: {e}")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -86,6 +95,9 @@ def execute():
 
     pdf_path = os.path.join(UPLOAD_FOLDER, "results.pdf")
     pdf.output(pdf_path)
+
+    # Clean up the upload folder
+    #cleaning_upload_folder()
 
     return send_file(pdf_path, as_attachment=True)
 
