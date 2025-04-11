@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a7141d9-4309-4d81-b358-482652965080" name="Changes" comment="added statisctical analysys functions">
+    <list default="true" id="2a7141d9-4309-4d81-b358-482652965080" name="Changes" comment="completed Flask_init.py for generating and opening results of analysis functions">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Flask_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/Flask_init.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Functions/analysys_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Functions/analysys_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Functions/plotting_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Functions/plotting_functions.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,12 +35,12 @@
     &quot;assignee&quot;: &quot;matbem&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/matbem/Data_analysis_system.git",
-    "accountId": "fbf5caf7-2862-4128-b519-b5ee0a38d9d4"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/matbem/Data_analysis_system.git&quot;,
+    &quot;accountId&quot;: &quot;fbf5caf7-2862-4128-b519-b5ee0a38d9d4&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -141,7 +138,8 @@
       <workItem from="1743698850474" duration="2647000" />
       <workItem from="1743775670100" duration="8950000" />
       <workItem from="1744026699197" duration="8247000" />
-      <workItem from="1744303087283" duration="10798000" />
+      <workItem from="1744303087283" duration="12078000" />
+      <workItem from="1744385447213" duration="3319000" />
     </task>
     <task id="LOCAL-00001" summary="first things">
       <option name="closed" value="true" />
@@ -167,7 +165,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743792057973</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="completed Flask_init.py for generating and opening results of analysis functions">
+      <option name="closed" value="true" />
+      <created>1744322192861</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744322192861</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -188,7 +194,8 @@
     <MESSAGE value="first things" />
     <MESSAGE value="added first new functions" />
     <MESSAGE value="added statisctical analysys functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="added statisctical analysys functions" />
+    <MESSAGE value="completed Flask_init.py for generating and opening results of analysis functions" />
+    <option name="LAST_COMMIT_MESSAGE" value="completed Flask_init.py for generating and opening results of analysis functions" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -203,6 +210,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Data_analysis_system$analysys_functions.coverage" NAME="analysys_functions Coverage Results" MODIFIED="1744322092586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Functions" />
-    <SUITE FILE_PATH="coverage/Data_analysis_system$Flask_init.coverage" NAME="Flask_init Coverage Results" MODIFIED="1744322103425" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Data_analysis_system$Flask_init.coverage" NAME="Flask_init Coverage Results" MODIFIED="1744389395886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
