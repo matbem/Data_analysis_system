@@ -4,8 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2a7141d9-4309-4d81-b358-482652965080" name="Changes" comment="added statisctical analysys functions">
+    <list default="true" id="2a7141d9-4309-4d81-b358-482652965080" name="Changes" comment="minor changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Flask_init.py" beforeDir="false" afterPath="$PROJECT_DIR$/Flask_init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Functions/analysys_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/Functions/analysys_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/static/JS_for_index.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/result.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uploads/results.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/uploads/results.pdf" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,13 +22,14 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Mateusz" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -49,11 +56,13 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;JavaScript Debug.index.html.executor&quot;: &quot;Run&quot;,
+    &quot;Python.Flask_init.executor&quot;: &quot;Run&quot;,
     &quot;Python.analysys_functions.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Mateusz&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/bemma/University/CPS/Lab_04&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -63,7 +72,30 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.Flask_init">
+    <configuration name="Flask_init" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Data_analysis_system" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Flask_init.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="Data_analysis_system" type="Python.FlaskServer">
       <module name="Data_analysis_system" />
       <option name="target" value="$PROJECT_DIR$/Flask_init.py" />
@@ -80,6 +112,12 @@
       <option name="launchJavascriptDebuger" value="false" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Flask_init" />
+        <item itemvalue="Python.Flask_init" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -105,6 +143,9 @@
       <workItem from="1743698318836" duration="366000" />
       <workItem from="1743698850474" duration="2647000" />
       <workItem from="1743775670100" duration="8950000" />
+      <workItem from="1744026699197" duration="8247000" />
+      <workItem from="1744303087283" duration="12078000" />
+      <workItem from="1744385447213" duration="5199000" />
     </task>
     <task id="LOCAL-00001" summary="first things">
       <option name="closed" value="true" />
@@ -130,19 +171,69 @@
       <option name="project" value="LOCAL" />
       <updated>1743792057973</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="completed Flask_init.py for generating and opening results of analysis functions">
+      <option name="closed" value="true" />
+      <created>1744322192861</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1744322192861</updated>
+    </task>
+    <task id="LOCAL-00005" summary="added plotting plottting functions with one column argument in pdf">
+      <option name="closed" value="true" />
+      <created>1744389770189</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1744389770189</updated>
+    </task>
+    <task id="LOCAL-00006" summary="minor changes">
+      <option name="closed" value="true" />
+      <created>1744710393726</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1744710393726</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first things" />
     <MESSAGE value="added first new functions" />
     <MESSAGE value="added statisctical analysys functions" />
-    <option name="LAST_COMMIT_MESSAGE" value="added statisctical analysys functions" />
+    <MESSAGE value="completed Flask_init.py for generating and opening results of analysis functions" />
+    <MESSAGE value="added plotting plottting functions with one column argument in pdf" />
+    <MESSAGE value="minor changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="minor changes" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Data_analysis_system$analysys_functions.coverage" NAME="analysys_functions Coverage Results" MODIFIED="1743411708545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Analysis" />
+    <SUITE FILE_PATH="coverage/Data_analysis_system$analysys_functions.coverage" NAME="analysys_functions Coverage Results" MODIFIED="1744322092586" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Functions" />
+    <SUITE FILE_PATH="coverage/Data_analysis_system$Flask_init.coverage" NAME="Flask_init Coverage Results" MODIFIED="1744727047988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
