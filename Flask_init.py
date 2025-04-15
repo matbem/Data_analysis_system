@@ -21,19 +21,8 @@ functions = {**Functions.analysys_functions.get_all_functions(), **Functions.plo
 def get_function_args_info():
     args_info = {}
     for func_name, func in functions.items():
-        if func.__code__.co_argcount > 2:
-            args_info[func_name] = func.__code__.co_argcount-1
-        else:
-            args_info[func_name] = 1
+            args_info[func_name] = func.__code__.co_argcount
     return args_info
-
-def cleaning_upload_folder():
-    files = glob.glob(os.path.join(UPLOAD_FOLDER, '*'))
-    for file in files:
-        try:
-            os.remove(file)
-        except Exception as e:
-            print(f"Error deleting file {file}: {e}")
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -58,14 +47,11 @@ def index():
 def execute():
     filename = request.form.get("uploaded_file")
     selected_function = request.form.getlist("functions")
-    print(selected_function)
     args_map = {}
 
     for func in selected_function:
         args = request.form.getlist(f"args_{func}[]")
-        print(args)
         args_map[func] = args
-    print(args_map)
     df = load_csv_file(filename)
     if df.empty:
         print("No data found")
@@ -75,18 +61,29 @@ def execute():
     pdf.set_font("Arial", size=12)
     pdf.cell(200, 10, txt="Results of data analysis", ln=True, align="C")
 
+    args_info = get_function_args_info()
+
     for func_name, args in args_map.items():
         if func_name in functions:
             func = functions[func_name]
             try:
-                columns = args_map[func_name]
-                result = func(df, *columns)
+                if args_info[func_name] >1:
+                    columns = args_map[func_name]
+                    result = func(df, *columns)
+                else:
+                    result = func(df)
+
                 if isinstance(result, plt.Figure):
                     fig_path = os.path.join(UPLOAD_FOLDER, f"{func_name}.png")
                     result.savefig(fig_path)
                     plt.close(result)
-                    pdf.cell(200, 10, txt=f"{func_name} of column: {', '.join(map(str, columns))}:", ln=True, align="L")
-                    pdf.image(fig_path, x=10, y=None, w=180)
+
+                    if args_info[func_name] > 1:
+                        pdf.cell(200, 10, txt=f"{func_name} of column: {', '.join(map(str, columns))}:", ln=True, align="L")
+                        pdf.image(fig_path, x=10, y=None, w=180)
+                    else:
+                        pdf.cell(200, 10, txt=f"{func_name}:", ln=True, align="L")
+                        pdf.image(fig_path, x=10, y=None, w=180)
                 else:
                     pdf.cell(200, 10, txt=f"{func_name} of column: {', '.join(map(str, columns))}: {result}", ln=True, align="L")
             except Exception as e:
@@ -95,9 +92,6 @@ def execute():
 
     pdf_path = os.path.join(UPLOAD_FOLDER, "results.pdf")
     pdf.output(pdf_path)
-
-    # Clean up the upload folder
-    #cleaning_upload_folder()
 
     return send_file(pdf_path, as_attachment=True)
 
