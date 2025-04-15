@@ -10,8 +10,6 @@ import scipy.stats as stats
 def compute_mean(df, column_name):
     return sum(df[column_name])/len(df[column_name])
 
-
-
 def compute_std(df, column_name):
     return compute_variance(df, column_name)**0.5
 
@@ -21,12 +19,6 @@ def compute_median(df, column_name):
                 if len(sorted_col) % 2 == 1
                 else (sorted_col[len(sorted_col)//2] + sorted_col[len(sorted_col)//2 - 1]) / 2)
             (sorted(df[column_name])))
-
-def compute_percentiles(df, column_name, percentile):
-    sorted_col = sorted(df[column_name])
-    index = int(percentile / 100 * (len(sorted_col) - 1))
-    return sorted_col[index]  # ta funkcje troche zmienilem bo mi wywalalo blad przez nia
-
 
 def compute_squared_difference(df,column_name):
     return list(map(lambda x: (x - compute_mean(df[column_name]))**2, df[column_name]))
@@ -44,9 +36,7 @@ def compute_covariance(df, column_name1, column_name2):
         ) / (len(df[column_name1]) - 1)
 
 def factorial_column(df, column_name):
-    if df[column_name].empty:
-        return df[column_name]
-    return df[column_name].apply(lambda x: math.factorial(int(x)) if x >= 0 else None) # i tutaj zmienilem ta koncowke po .apply
+    return df[column_name].apply(lambda x: None if x<0 else reduce(lambda acc, n: acc*n, range(1, int(x)+1),1))
 
 def recursive_sum(df, column_name):
     return lambda: 0 if df.empty else df[column_name].iloc[0] + recursive_sum(df.iloc[1:], column_name)()
@@ -56,10 +46,4 @@ def compute_corelation(df, column_name1, column_name2):
         return None
     return compute_covariance(df, column_name1, column_name2)/(compute_std(df[column_name1]) * compute_std(df[column_name2]))
 
-
-
-#if __name__ == '__main__':
-#    df = load_csv_file("C:\\Users\\bemma\\University\\JPWP\\data.csv")
-#    print(compute_variance(df,"Duration"))
-#    print(np.var(df))
 
