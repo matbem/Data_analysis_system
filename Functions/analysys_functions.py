@@ -39,12 +39,14 @@ def factorial_column(df, column_name):
     return df[column_name].apply(lambda x: None if x<0 else reduce(lambda acc, n: acc*n, range(1, int(x)+1),1))
 
 def recursive_sum(df, column_name):
-    return lambda: 0 if df.empty else df[column_name].iloc[0] + recursive_sum(df.iloc[1:], column_name)()
+    if df.empty:
+        return 0
+    return df[column_name].iloc[0] + recursive_sum(df.iloc[1:], column_name)
 
 def compute_corelation(df, column_name1, column_name2):
     if len(df[column_name1]) != len(df[column_name2]) or len(df[column_name1]) < 2:
         return None
-    return compute_covariance(df, column_name1, column_name2)/(compute_std(df[column_name1]) * compute_std(df[column_name2]))
+    return compute_covariance(df, column_name1, column_name2)/(compute_std(df,column_name1) * compute_std(df,column_name2))
 
 def get_all_functions():
      return {
